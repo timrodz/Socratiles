@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ButtonActivator : MonoBehaviour {
 	
-	public Transform[] barriers;
+	public Transform objectTransform;
 
 	public VectorDirection.directions vectorDirection;
 
@@ -14,19 +14,23 @@ public class ButtonActivator : MonoBehaviour {
 
 	Vector3 translationVector;
 
+	private bool bHasBegunTranslation = false;
 
 	private void Start() {
 
-		translationVector = VectorDirection.DetermineDirection(vectorDirection);
+//		print("Starting " + transform.name);
+//		translationVector = VectorDirection.DetermineDirection(vectorDirection);
 
 	}
 
 	private void OnTriggerEnter(Collider other) {
 
-		foreach (Transform barrier in barriers) {
+		print(transform.name + " OnTriggerEnter activated via " + other.name);
 
-			StartCoroutine(TranslateTo(barrier));
-			
+		if (!bHasBegunTranslation) {
+		StartCoroutine(RotateCamera(Vector3.back.normalized * -90));
+//			StartCoroutine(TranslateTo(barrier));
+			bHasBegunTranslation = !bHasBegunTranslation;
 		}
 
 	}
@@ -37,7 +41,6 @@ public class ButtonActivator : MonoBehaviour {
 		Vector3 target = objectTransform.position + (distanceScale * translationVector);
 
 		yield return new WaitForSeconds(0.0f);
-//		MapController.canRotateCamera = false;
 
 		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / fDuration)) {
 
@@ -48,8 +51,34 @@ public class ButtonActivator : MonoBehaviour {
 
 		// Destroy the button after the translation has finished
 		objectTransform.position = target;
-//		MapController.canRotateCamera = true;
-		Destroy(gameObject);
+		bHasBegunTranslation = !bHasBegunTranslation;
+
+	}
+
+	public IEnumerator RotateCamera(Vector3 anglesInDegrees) {
+
+//		canRotateCamera = false;
+
+		Quaternion fromAngle = transform.rotation; // Get the transform's current rotation coordinates
+		Quaternion toAngle = Quaternion.Euler(transform.eulerAngles + anglesInDegrees); // Convert byAngles to radians
+
+//		print("fromAngle: " + fromAngle + " toAngle: " + toAngle);
+
+		// Process a loop that lasts for the prompted time
+		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / fDuration)) {
+
+			// Make a slerp from the current rotation's coordinates to the desired rotation
+			objectTransform.rotation = Quaternion.Slerp(fromAngle, toAngle, t);
+			yield return null;
+
+		}
+
+		// Round the rotation at the end
+		objectTransform.rotation = toAngle;
+//		canRotateCamera = true;
+
+		// Update the current move count
+		//		GameManager.moveCount++;
 
 	}
 

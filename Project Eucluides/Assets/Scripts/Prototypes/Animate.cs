@@ -5,12 +5,12 @@ public class Animate : MonoBehaviour {
 
 	public enum AnimationTypes {
 		FadeIn,
+		Rotate,
 		FadeOut,
 		ZoomIn,
 		ZoomOut,
-		FadeZoomIn}
-
-	;
+		FadeZoomIn
+	};
 
 	public Transform objectToAnimate;
 
@@ -44,6 +44,9 @@ public class Animate : MonoBehaviour {
 
 			case AnimationTypes.FadeIn:
 				StartCoroutine(FadeIn());
+				break;
+			case AnimationTypes.Rotate:
+//				StartCoroutine(Rotate());
 				break;
 			case AnimationTypes.FadeOut:
 				StartCoroutine(FadeOut());
