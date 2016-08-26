@@ -9,12 +9,6 @@ public class MapController : MonoBehaviour {
 	[SerializeField]
 	private float rotationDuration = 0.05f;
 
-	// For referencing the player's current speed and finished level state
-//	private GameObject player;
-
-	// For accessing the paused state of the game
-//	GameManager gm;
-
 	void Awake() {
 
 //		gm = GameObject.Find("Game Manager").GetComponent<GameManager>();

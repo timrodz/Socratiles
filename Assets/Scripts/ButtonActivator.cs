@@ -28,6 +28,7 @@ public class ButtonActivator : MonoBehaviour {
 		print(transform.name + " OnTriggerEnter activated via " + other.name);
 
 		if (!bHasBegunTranslation) {
+			
 			StartCoroutine(RotateCamera(Vector3.up * -90));
 			bHasBegunTranslation = !bHasBegunTranslation;
 		}

@@ -13,48 +13,41 @@ public class PlayerMovement : MonoBehaviour {
 	float verticalAxis;
 	float horizontalAxis;
 	Transform nextTile;
-
-	// Use this for initialization
-	void Start() {
-
-	}
+	public static bool bIsTileMoving;
 
 	// Update is called once per frame
 	void Update() {
 
+		if (!bIsTileMoving)
+			ProcessInput();
+		StayOnTile();
 
-        ProcessInput();
-        StayOnTile();
+	}
 
-    }
+	void ProcessInput() {
+		
+		// Move left because the camera is positioned at y: 225
+		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
+			Turn(Direction.Backwards);
+			MoveForward();
+		}
 
-    void ProcessInput()
-    {
-        // Move left because the camera is positioned at y: 225
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
-        {
-            Turn(Direction.Backwards);
-            MoveForward();
-        }
+		if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
+			Turn(Direction.Forward);
+			MoveForward();
+		}
 
-        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
-        {
-            Turn(Direction.Forward);
-            MoveForward();
-        }
+		if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
+			Turn(Direction.Left);
+			MoveForward();
+		}
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-        {
-            Turn(Direction.Left);
-            MoveForward();
-        }
+		if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
+			Turn(Direction.Right);
+			MoveForward();
+		}
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-        {
-            Turn(Direction.Right);
-            MoveForward();
-        }
-    }
+	}
 
 	bool DetectPath(Vector3 direction) {
 		
@@ -80,6 +73,7 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void Turn(Direction direction) {
+		
 		switch (direction) {
 			case Direction.Forward:
 				transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0, 0);
@@ -96,11 +90,13 @@ public class PlayerMovement : MonoBehaviour {
 			default:
 				break;
 		}
+
 	}
 
-    void StayOnTile()
-    {
-        transform.parent = nextTile.parent;
-    }
+	void StayOnTile() {
+		if (nextTile) {
+			transform.parent = nextTile.parent;
+		}
+	}
 
 }
