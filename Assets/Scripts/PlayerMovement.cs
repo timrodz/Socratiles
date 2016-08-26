@@ -22,28 +22,39 @@ public class PlayerMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 
-		// Move left because the camera is positioned at y: 225
-		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
-			Turn(Direction.Backwards);
-			MoveForward();
-		}
 
-		if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
-			Turn(Direction.Forward);
-			MoveForward();
-		}
-			
-		if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
-			Turn(Direction.Left);
-			MoveForward();
-		}
+        ProcessInput();
+        StayOnTile();
 
-		if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
-			Turn(Direction.Right);
-			MoveForward();
-		}
+    }
 
-	}
+    void ProcessInput()
+    {
+        // Move left because the camera is positioned at y: 225
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+        {
+            Turn(Direction.Backwards);
+            MoveForward();
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+        {
+            Turn(Direction.Forward);
+            MoveForward();
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        {
+            Turn(Direction.Left);
+            MoveForward();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        {
+            Turn(Direction.Right);
+            MoveForward();
+        }
+    }
 
 	bool DetectPath(Vector3 direction) {
 		
@@ -86,5 +97,10 @@ public class PlayerMovement : MonoBehaviour {
 				break;
 		}
 	}
+
+    void StayOnTile()
+    {
+        transform.parent = nextTile.parent;
+    }
 
 }
