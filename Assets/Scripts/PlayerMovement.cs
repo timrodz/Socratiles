@@ -59,10 +59,12 @@ public class PlayerMovement : MonoBehaviour {
 		RaycastHit hit;
 
 		if (Physics.Raycast(transform.position, direction, out hit, 10)) {
+			
 			if (hit.collider.gameObject.CompareTag("TilePath")) {
 				nextTile = hit.collider.GetComponent<Transform>();
 				return true;
 			}
+
 		}
 
 		return false;
@@ -72,20 +74,28 @@ public class PlayerMovement : MonoBehaviour {
 	public IEnumerator MoveForward() {
 
 		if (DetectPath(transform.forward)) {
-			float step = smoothMove * Time.deltaTime;
+			
 			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
 
 			isPlayerMoving = true;
 
 			yield return new WaitForSeconds(0.0f);
-			for (float t = 0.0f; t < 0.25f; t += (Time.deltaTime / duration)) {
+			for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / duration)) {
 
+				if (!isPlayerMoving) {
+					print("Encountered a trigger");
+					transform.position = targetPosition;
+//					isPlayerMoving = true;
+					yield break;
+				}
+				
 				transform.position = Vector3.MoveTowards(transform.position, targetPosition, t);
 				yield return null;
 
 			}
 
 			isPlayerMoving = false;
+
 		}
 
 	}
@@ -112,9 +122,11 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void StayOnTile() {
+		
 		if (nextTile) {
 			transform.parent = nextTile;
 		}
+
 	}
 
 }

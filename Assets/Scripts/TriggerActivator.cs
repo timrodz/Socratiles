@@ -39,8 +39,7 @@ public class TriggerActivator : MonoBehaviour {
 		if (!hasActivatedTrigger) {
 
 			PlayerMovement.isTileMoving = true;
-
-			print(PlayerMovement.isTileMoving);
+			PlayerMovement.isPlayerMoving = false;
 
 			switch (trigger) {
 
@@ -83,6 +82,7 @@ public class TriggerActivator : MonoBehaviour {
 		transformObj.position = target;
 
 		PlayerMovement.isTileMoving = false;
+		PlayerMovement.isPlayerMoving = true;
 		hasActivatedTrigger = false;
 
 	}
@@ -108,6 +108,7 @@ public class TriggerActivator : MonoBehaviour {
 		transformObj.rotation = toAngle;
 
 		PlayerMovement.isTileMoving = false;
+		PlayerMovement.isPlayerMoving = true;
 		hasActivatedTrigger = false;
 
 	}
