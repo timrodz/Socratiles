@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour {
 
 	float verticalAxis;
 	float horizontalAxis;
-	public float smoothMove = 2.0f;
 	public float duration = 1.0f;
 	Transform nextTile;
 	public static bool isTileMoving;
