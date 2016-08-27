@@ -5,19 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class LevelGoal : MonoBehaviour {
 
-	// Use this for initialization
-	void Start() {
-	
-	}
-	
-	// Update is called once per frame
-	void Update() {
-	
-	}
-
-	/// <summary>
-	/// Loads the next level.
-	/// </summary>
 	void OnEnable() {
 
 		print("Loading next level");
@@ -56,6 +43,9 @@ public class LevelGoal : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Loads the next level
+	/// </summary>
 	private IEnumerator LoadNextLevel(Transform player, Object levelObject) {
 
 		print("Before");

@@ -79,6 +79,7 @@ public class TriggerActivator : MonoBehaviour {
 					hasReachedGoal = true;
 					StartCoroutine(TranslateTo());
 					break;
+
 			}
 
 		}
@@ -122,6 +123,7 @@ public class TriggerActivator : MonoBehaviour {
 		if (hasReachedGoal) {
 
 			print("Reached goal");
+			hasReachedGoal = !hasReachedGoal;
 			EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
 			et.Enable();
 
@@ -159,6 +161,7 @@ public class TriggerActivator : MonoBehaviour {
 		if (hasReachedGoal) {
 
 			print("Reached goal");
+			hasReachedGoal = !hasReachedGoal;
 			EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
 			et.Enable();
 

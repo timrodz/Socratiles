@@ -9,13 +9,12 @@ public class CameraFollowDelay : MonoBehaviour {
 	// Controls the rotation
 	public float damping = 6.0f;
 
-	public bool smooth = true;
-
 	public float offsetX = 0.0f;
 	public float offsetY = 0.0f;
 	public float offsetZ = 0.0f;
 
 	void LateUpdate() {
+		
 		if (target) {
 
 			//Look at and dampen the rotation
