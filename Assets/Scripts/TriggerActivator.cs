@@ -5,11 +5,13 @@ using System.Collections.Generic;
 public class TriggerActivator : MonoBehaviour {
 
 	// The object to apply transformations to
-	public Transform transformObj;
+	public Transform tileTransform;
 
 	public enum TriggerType {
-		Rotation,
-		Translation
+		TurnRotation,
+		Translation,
+		WinningRotation,
+		WinningTranslation
 	};
 
 	public TriggerType trigger;
@@ -18,8 +20,7 @@ public class TriggerActivator : MonoBehaviour {
 
 	public float distance = 1.0f;
 
-
-	private float transformLength = 0.99f;
+	public float transformLength = 0.99f;
 
 	private bool hasActivatedTrigger = false;
 
@@ -31,14 +32,16 @@ public class TriggerActivator : MonoBehaviour {
 
 	private int triggerState = 0;
 
+	bool hasReachedGoal = false;
+
 	/// <summary>
 	/// Start this instance.
 	/// </summary>
 	private void Start() {
 
 		// Make the transform the current parent if no object has been selected
-		if (!transformObj)
-			transformObj = this.transform.parent;
+		if (!tileTransform)
+			tileTransform = this.transform.parent;
 		
 		orgTransformVector = VectorDirection.DetermineDirection(triggerDirection);
 		oppTransformVector = VectorDirection.DetermineOppositeDirection(triggerDirection);
@@ -52,8 +55,6 @@ public class TriggerActivator : MonoBehaviour {
 
 		if (!hasActivatedTrigger) {
 
-			print("Trigger activated");
-
 			PlayerMovement.isTileMoving = true;
 			PlayerMovement.isPlayerMoving = false;
 
@@ -64,67 +65,23 @@ public class TriggerActivator : MonoBehaviour {
 
 			switch (trigger) {
 
-				case TriggerType.Rotation:
-					print("Rotation trigger at " + transform.position);
-					StartCoroutine(RotateBy(transformVector * -90));
+				case TriggerType.TurnRotation:
+					StartCoroutine(RotateByAxis(transformVector * -90));
 					break;
 				case TriggerType.Translation:
-					print("Translation trigger at " + transform.position);
 					StartCoroutine(TranslateTo());
 					break;
-
+				case TriggerType.WinningRotation:
+					hasReachedGoal = true;
+					StartCoroutine(RotateByAxis(transformVector * 180));
+					break;
+				case TriggerType.WinningTranslation:
+					hasReachedGoal = true;
+					StartCoroutine(TranslateTo());
+					break;
 			}
 
-			print("Finished the trigger event");
-
 		}
-
-	}
-
-	/// <summary>
-	/// Translates to a desired position.
-	/// </summary>
-	private IEnumerator TranslateTo() {
-
-		Vector3 target = transformObj.position + (distance * transformVector);
-
-		yield return new WaitForSeconds(0.0f);
-
-		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / transformLength)) {
-
-			transformObj.position = Vector3.MoveTowards(transformObj.position, target, t);
-			yield return null;
-
-		}
-
-		// Round the transform's position
-		transformObj.position = target;
-
-		UpdateStates();
-
-	}
-
-	/// <summary>
-	/// Rotates by a desired angle.
-	/// </summary>
-	public IEnumerator RotateBy(Vector3 anglesInDegrees) {
-
-		Quaternion fromAngle = transformObj.rotation; // Get the transform's current rotation coordinates
-		Quaternion toAngle = Quaternion.Euler(transformObj.eulerAngles + anglesInDegrees); // Convert byAngles to radians
-
-		// Process a loop that lasts for the prompted time
-		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / transformLength)) {
-
-			// Make a slerp from the current rotation's coordinates to the desired rotation
-			transformObj.rotation = Quaternion.Slerp(fromAngle, toAngle, t * 1.5f);
-			yield return null;
-
-		}
-
-		// Round the rotation at the end
-		transformObj.rotation = toAngle;
-
-		UpdateStates();
 
 	}
 
@@ -141,6 +98,71 @@ public class TriggerActivator : MonoBehaviour {
 			triggerState = 1;
 		else
 			triggerState = 0;
+
+	}
+
+	/// <summary>
+	/// Translates to a desired position.
+	/// </summary>
+	private IEnumerator TranslateTo() {
+
+		Vector3 target = tileTransform.position + (distance * transformVector);
+
+		yield return new WaitForSeconds(0.0f);
+
+		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / transformLength)) {
+
+			tileTransform.position = Vector3.MoveTowards(tileTransform.position, target, t);
+			yield return null;
+
+		}
+
+		UpdateStates();
+
+		if (hasReachedGoal) {
+
+			print("Reached goal");
+			EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
+			et.Enable();
+
+		} else {
+			
+			// Round the transform's position
+			tileTransform.position = target;
+
+		}
+
+	}
+
+	/// <summary>
+	/// Rotates by a desired angle.
+	/// </summary>
+	public IEnumerator RotateByAxis(Vector3 anglesInDegrees) {
+
+		Quaternion fromAngle = tileTransform.rotation; // Get the transform's current rotation coordinates
+		Quaternion toAngle = Quaternion.Euler(tileTransform.eulerAngles + anglesInDegrees); // Convert byAngles to radians
+
+		// Process a loop that lasts for the prompted time
+		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / transformLength)) {
+
+			// Make a slerp from the current rotation's coordinates to the desired rotation
+			tileTransform.rotation = Quaternion.Slerp(fromAngle, toAngle, t);
+			yield return null;
+
+		}
+
+		// Round the rotation at the end
+		tileTransform.rotation = toAngle;
+
+		UpdateStates();
+
+		if (hasReachedGoal) {
+
+			print("Reached goal");
+			EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
+			et.Enable();
+
+		}
 
 	}
 

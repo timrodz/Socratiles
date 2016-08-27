@@ -89,13 +89,10 @@ public class PlayerMovement : MonoBehaviour {
 
 			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
 
-			print("Player started moving towards " + targetPosition);
-
 			yield return new WaitForSeconds(0.0f);
 			for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / duration)) {
 
 				if (!isPlayerMoving) {
-					print("Breaking function MoveForward");
 					transform.position = targetPosition;
 					canMove = true;
 					yield break;
