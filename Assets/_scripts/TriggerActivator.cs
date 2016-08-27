@@ -1,11 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class TriggerActivator : MonoBehaviour {
-
-	// The object to apply transformations to
-	public Transform tileTransform;
 
 	public enum TriggerType {
 		TurnRotation,
@@ -13,6 +9,9 @@ public class TriggerActivator : MonoBehaviour {
 		WinningRotation,
 		WinningTranslation
 	};
+
+	// The object to apply transformations to
+	public Transform tileTransform;
 
 	public TriggerType trigger;
 
@@ -33,6 +32,16 @@ public class TriggerActivator : MonoBehaviour {
 	private int triggerState = 0;
 
 	bool hasReachedGoal = false;
+
+	// Audio
+	private AudioSource aSource;
+
+	private void Awake() {
+
+		aSource = GetComponent<AudioSource>();
+
+	}
+
 
 	/// <summary>
 	/// Start this instance.
@@ -63,9 +72,14 @@ public class TriggerActivator : MonoBehaviour {
 			else
 				transformVector = oppTransformVector;
 
+			// Play the audio clip
+			aSource.PlayOneShot(aSource.clip, 1);
+
 			switch (trigger) {
 
+				// rotation
 				case TriggerType.TurnRotation:
+					StartCoroutine(RaiseAndLower(1.1f));
 					StartCoroutine(RotateByAxis(transformVector * -90));
 					break;
 				case TriggerType.Translation:
@@ -139,10 +153,10 @@ public class TriggerActivator : MonoBehaviour {
 	/// <summary>
 	/// Rotates by a desired angle.
 	/// </summary>
-	public IEnumerator RotateByAxis(Vector3 anglesInDegrees) {
+	private IEnumerator RotateByAxis(Vector3 angleToRotate) {
 
 		Quaternion fromAngle = tileTransform.rotation; // Get the transform's current rotation coordinates
-		Quaternion toAngle = Quaternion.Euler(tileTransform.eulerAngles + anglesInDegrees); // Convert byAngles to radians
+		Quaternion toAngle = Quaternion.Euler(tileTransform.eulerAngles + angleToRotate); // Convert byAngles to radians
 
 		// Process a loop that lasts for the prompted time
 		for (float t = 0.0f; t < 0.75f; t += (Time.deltaTime / transformLength)) {
@@ -164,6 +178,34 @@ public class TriggerActivator : MonoBehaviour {
 			hasReachedGoal = !hasReachedGoal;
 			EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
 			et.Enable();
+
+		}
+
+	}
+
+	/// <summary>
+	/// Raises and lowers by a desired distance (for rising and lowering)
+	/// </summary>
+	private IEnumerator RaiseAndLower(float distance) {
+
+		// Raise up
+		Vector3 target = tileTransform.position + (distance * Vector3.up);
+		print("Rising up");
+
+		for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / (transformLength))) {
+
+			tileTransform.position = Vector3.MoveTowards(tileTransform.position, target, t * 1.25f);
+			yield return null;
+
+		}
+
+		target = tileTransform.position + (distance * Vector3.down);
+		print("Lowering down");
+
+		for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / (transformLength))) {
+
+			tileTransform.position = Vector3.MoveTowards(tileTransform.position, target, t);
+			yield return null;
 
 		}
 
