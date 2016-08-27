@@ -110,7 +110,7 @@ public class TriggerActivator : MonoBehaviour {
 
 		yield return new WaitForSeconds(0.0f);
 
-		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / transformLength)) {
+		for (float t = 0.0f; t < 0.75f; t += (Time.deltaTime / transformLength)) {
 
 			tileTransform.position = Vector3.MoveTowards(tileTransform.position, target, t);
 			yield return null;
@@ -143,7 +143,7 @@ public class TriggerActivator : MonoBehaviour {
 		Quaternion toAngle = Quaternion.Euler(tileTransform.eulerAngles + anglesInDegrees); // Convert byAngles to radians
 
 		// Process a loop that lasts for the prompted time
-		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / transformLength)) {
+		for (float t = 0.0f; t < 0.75f; t += (Time.deltaTime / transformLength)) {
 
 			// Make a slerp from the current rotation's coordinates to the desired rotation
 			tileTransform.rotation = Quaternion.Slerp(fromAngle, toAngle, t);
