@@ -38,6 +38,8 @@ public class TriggerActivator : MonoBehaviour {
 
 		if (!hasActivatedTrigger) {
 
+			print("has Activated Trigger");
+
 			PlayerMovement.isTileMoving = true;
 			PlayerMovement.isPlayerMoving = false;
 

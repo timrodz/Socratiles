@@ -17,15 +17,20 @@ public class PlayerMovement : MonoBehaviour {
 	Transform nextTile;
 	public static bool isTileMoving;
 	public static bool isPlayerMoving;
+	private bool canMove = true;
 
 	// Update is called once per frame
 	void Update() {
 
-		if (!isTileMoving) {
-			ProcessInput();
-		}
 
-		StayOnTile();
+
+		if (!isTileMoving && canMove) {
+			
+			ProcessInput();
+
+		} else {
+			StayOnTile();
+		}
 
 	}
 
@@ -74,18 +79,21 @@ public class PlayerMovement : MonoBehaviour {
 	public IEnumerator MoveForward() {
 
 		if (DetectPath(transform.forward)) {
-			
-			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
 
+			canMove = false;
 			isPlayerMoving = true;
+
+			print("Player started moving");
+
+			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
 
 			yield return new WaitForSeconds(0.0f);
 			for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / duration)) {
 
 				if (!isPlayerMoving) {
-					print("Encountered a trigger");
+					print("Breaking function MoveForward");
 					transform.position = targetPosition;
-//					isPlayerMoving = true;
+					canMove = true;
 					yield break;
 				}
 				
@@ -94,6 +102,7 @@ public class PlayerMovement : MonoBehaviour {
 
 			}
 
+			canMove = true;
 			isPlayerMoving = false;
 
 		}
