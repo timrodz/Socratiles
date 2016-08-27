@@ -32,10 +32,10 @@ public class VectorDirection {
 				resultingVector = Vector3.left;
 				break;
 			case VectorDirection.directions.Forward:
-				resultingVector = Vector3.back;
+				resultingVector = Vector3.forward;
 				break;
 			case VectorDirection.directions.Back:
-				resultingVector = Vector3.forward;
+				resultingVector = Vector3.back;
 				break;
 			case VectorDirection.directions.Equally:
 				resultingVector = Vector3.one;

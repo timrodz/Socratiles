@@ -13,13 +13,15 @@ public class PlayerMovement : MonoBehaviour {
 	float verticalAxis;
 	float horizontalAxis;
 	Transform nextTile;
-	public static bool bIsTileMoving;
+	public static bool isTileMoving = false;
+	public static bool isMoving = false;
 
 	// Update is called once per frame
 	void Update() {
 
-		if (!bIsTileMoving)
+		if (!isTileMoving)
 			ProcessInput();
+		
 		StayOnTile();
 
 	}
@@ -28,22 +30,22 @@ public class PlayerMovement : MonoBehaviour {
 		
 		// Move left because the camera is positioned at y: 225
 		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
-			Turn(Direction.Backwards);
-			MoveForward();
-		}
-
-		if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
-			Turn(Direction.Forward);
-			MoveForward();
-		}
-
-		if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
 			Turn(Direction.Left);
 			MoveForward();
 		}
 
-		if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
+		if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
 			Turn(Direction.Right);
+			MoveForward();
+		}
+
+		if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
+			Turn(Direction.Backwards);
+			MoveForward();
+		}
+
+		if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
+			Turn(Direction.Forward);
 			MoveForward();
 		}
 
@@ -54,10 +56,14 @@ public class PlayerMovement : MonoBehaviour {
 		RaycastHit hit;
 
 		if (Physics.Raycast(transform.position, direction, out hit, 4)) {
+
 			if (hit.collider.gameObject.CompareTag("TilePath")) {
+
 				nextTile = hit.collider.GetComponent<Transform>();
 				return true;
+
 			}
+
 		}
 
 		return false;
@@ -67,7 +73,10 @@ public class PlayerMovement : MonoBehaviour {
 	void MoveForward() {
 		
 		if (DetectPath(transform.forward)) {
+		
+			isMoving = true;
 			transform.position = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
+		
 		}
 
 	}
@@ -94,9 +103,13 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void StayOnTile() {
+		
 		if (nextTile) {
+		
 			transform.parent = nextTile.parent;
+		
 		}
+
 	}
 
 }
