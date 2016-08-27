@@ -146,7 +146,7 @@ public class TriggerActivator : MonoBehaviour {
 		for (float t = 0.0f; t < 0.75f; t += (Time.deltaTime / transformLength)) {
 
 			// Make a slerp from the current rotation's coordinates to the desired rotation
-			tileTransform.rotation = Quaternion.Slerp(fromAngle, toAngle, t);
+			tileTransform.rotation = Quaternion.Slerp(fromAngle, toAngle, t * 1.5f);
 			yield return null;
 
 		}
