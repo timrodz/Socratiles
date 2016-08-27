@@ -53,7 +53,7 @@ public class PlayerMovement : MonoBehaviour {
 		
 		RaycastHit hit;
 
-		if (Physics.Raycast(transform.position, direction, out hit, 4)) {
+		if (Physics.Raycast(transform.position, direction, out hit, 10)) {
 			if (hit.collider.gameObject.CompareTag("TilePath")) {
 				nextTile = hit.collider.GetComponent<Transform>();
 				return true;

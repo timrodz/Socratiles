@@ -28,7 +28,8 @@ public class ButtonActivator : MonoBehaviour {
 		print(transform.name + " OnTriggerEnter activated via " + other.name);
 
 		if (!bHasBegunTranslation) {
-			
+
+            PlayerMovement.bIsTileMoving = true;
 			StartCoroutine(RotateCamera(Vector3.up * -90));
 			bHasBegunTranslation = !bHasBegunTranslation;
 		}
@@ -72,7 +73,8 @@ public class ButtonActivator : MonoBehaviour {
 		// Round the rotation at the end
 		transformObj.rotation = toAngle;
 		bHasBegunTranslation = !bHasBegunTranslation;
+        PlayerMovement.bIsTileMoving = false;
 
-	}
+    }
 
 }
