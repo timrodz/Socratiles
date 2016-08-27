@@ -65,7 +65,7 @@ public class TriggerActivator : MonoBehaviour {
 	/// </summary>
 	private IEnumerator TranslateTo() {
 
-		distanceScale = transformObj.FindChild("Floor").GetComponent<Transform>().localScale.x;
+//		distanceScale = transformObj.FindChild("Floor").GetComponent<Transform>().localScale.x;
 
 		translationVector = VectorDirection.DetermineDirection(triggerDirection);
 
@@ -101,7 +101,7 @@ public class TriggerActivator : MonoBehaviour {
 		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / fDuration)) {
 
 			// Make a slerp from the current rotation's coordinates to the desired rotation
-			transformObj.rotation = Quaternion.Slerp(fromAngle, toAngle, t);
+			transformObj.rotation = Quaternion.Slerp(fromAngle, toAngle, t * 1.5f);
 			yield return null;
 
 		}

@@ -22,7 +22,11 @@ public class PlayerMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 
-
+		transform.position = new Vector3(
+			(float)System.Math.Round(transform.position.x, 2),
+			(float)System.Math.Round(transform.position.y, 2),
+			(float)System.Math.Round(transform.position.z, 2)
+		);
 
 		if (!isTileMoving && canMove) {
 			
@@ -83,9 +87,9 @@ public class PlayerMovement : MonoBehaviour {
 			canMove = false;
 			isPlayerMoving = true;
 
-			print("Player started moving");
-
 			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
+
+			print("Player started moving towards " + targetPosition);
 
 			yield return new WaitForSeconds(0.0f);
 			for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / duration)) {
@@ -101,6 +105,8 @@ public class PlayerMovement : MonoBehaviour {
 				yield return null;
 
 			}
+
+			transform.position = targetPosition;
 
 			canMove = true;
 			isPlayerMoving = false;
