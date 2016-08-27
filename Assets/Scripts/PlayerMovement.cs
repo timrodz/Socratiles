@@ -12,14 +12,20 @@ public class PlayerMovement : MonoBehaviour {
 
 	float verticalAxis;
 	float horizontalAxis;
+    public float smoothMove = 2.0f;
+    public float duration = 1.0f;
 	Transform nextTile;
 	public static bool bIsTileMoving;
+    public static bool isPlayerMoving;
 
-	// Update is called once per frame
-	void Update() {
+    // Update is called once per frame
+    void Update() {
 
 		if (!bIsTileMoving)
-			ProcessInput();
+        {
+            ProcessInput();
+        }
+			
 		StayOnTile();
 
 	}
@@ -29,23 +35,23 @@ public class PlayerMovement : MonoBehaviour {
 		// Move left because the camera is positioned at y: 225
 		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
 			Turn(Direction.Backwards);
-			MoveForward();
+			StartCoroutine(MoveForward());
 		}
 
 		if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
 			Turn(Direction.Forward);
-			MoveForward();
-		}
+            StartCoroutine(MoveForward());
+        }
 
 		if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
 			Turn(Direction.Left);
-			MoveForward();
-		}
+            StartCoroutine(MoveForward());
+        }
 
 		if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
 			Turn(Direction.Right);
-			MoveForward();
-		}
+            StartCoroutine(MoveForward());
+        }
 
 	}
 
@@ -64,11 +70,25 @@ public class PlayerMovement : MonoBehaviour {
 
 	}
 
-	void MoveForward() {
-		
-		if (DetectPath(transform.forward)) {
-			transform.position = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
-		}
+	public IEnumerator MoveForward() {
+
+        if (DetectPath(transform.forward)) {
+            float step = smoothMove * Time.deltaTime;
+            Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
+
+            isPlayerMoving = true;
+
+            yield return new WaitForSeconds(0.0f);
+            for (float t = 0.0f; t < 0.25f; t += (Time.deltaTime / duration))
+            {
+    
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, t);
+                yield return null;
+
+            }
+
+            isPlayerMoving = false;
+        }
 
 	}
 
@@ -95,7 +115,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	void StayOnTile() {
 		if (nextTile) {
-			transform.parent = nextTile.parent;
+			transform.parent = nextTile;
 		}
 	}
 
