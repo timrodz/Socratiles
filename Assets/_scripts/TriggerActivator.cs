@@ -17,14 +17,19 @@ public class TriggerActivator : MonoBehaviour {
 
 	public VectorDirection.directions triggerDirection;
 
+	[HideInInspector]
+    public Vector3 targetTransform;
+
 	public float distance = 1.0f;
 
 	public float transformLength = 0.99f;
 
 	private bool hasActivatedTrigger = false;
 
-	// States
-	private Vector3
+    public bool shouldHaveStates = true;
+
+    // States
+    private Vector3
 	transformVector,
 	orgTransformVector,
 	oppTransformVector;
@@ -33,12 +38,15 @@ public class TriggerActivator : MonoBehaviour {
 
 	bool hasReachedGoal = false;
 
-	// Audio
-	private AudioSource aSource;
+    // Audio
+    private AudioSource aSource;
+
+	public bool playSound;
 
 	private void Awake() {
 
-		aSource = GetComponent<AudioSource>();
+		if (playSound)
+			aSource = GetComponent<AudioSource>();
 
 	}
 
@@ -72,8 +80,15 @@ public class TriggerActivator : MonoBehaviour {
 			else
 				transformVector = oppTransformVector;
 
+			if (!shouldHaveStates && (trigger == TriggerType.TurnRotation)) {
+
+				transformVector = orgTransformVector;
+
+			}
+
 			// Play the audio clip
-			aSource.PlayOneShot(aSource.clip, 1);
+			if (playSound)
+				aSource.PlayOneShot(aSource.clip, 1);
 
 			switch (trigger) {
 
@@ -86,11 +101,10 @@ public class TriggerActivator : MonoBehaviour {
 					StartCoroutine(TranslateTo());
 					break;
 				case TriggerType.WinningRotation:
-					hasReachedGoal = true;
-					StartCoroutine(RotateByAxis(transformVector * 180));
+                    StartCoroutine(RotateByAxis(transformVector * 180));
 					break;
 				case TriggerType.WinningTranslation:
-					hasReachedGoal = true;
+                    hasReachedGoal = true;
 					StartCoroutine(TranslateTo());
 					break;
 
@@ -121,34 +135,39 @@ public class TriggerActivator : MonoBehaviour {
 	/// </summary>
 	private IEnumerator TranslateTo() {
 
-		Vector3 target = tileTransform.position + (distance * transformVector);
+		targetTransform = tileTransform.position + (distance * transformVector);
 
-		yield return new WaitForSeconds(0.0f);
+		if (hasReachedGoal) {
+			yield return new WaitForSeconds(0.3f);
+            CameraFollowDelay.damping = 100;
+		}
 
 		for (float t = 0.0f; t < 0.75f; t += (Time.deltaTime / transformLength)) {
 
-			tileTransform.position = Vector3.MoveTowards(tileTransform.position, target, t);
+			tileTransform.position = Vector3.MoveTowards(tileTransform.position, targetTransform, t);
+
+			if ((t >= 0.45f) && (hasReachedGoal)) {
+
+             	print("Reached Goal at " + tileTransform.position);
+             	hasReachedGoal = !hasReachedGoal;
+				EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
+				et.EnableObject();
+
+            }
+
 			yield return null;
 
 		}
 
+		// Round the transform's position
+		tileTransform.position = targetTransform;
+
 		UpdateStates();
 
-		if (hasReachedGoal) {
+        if (hasReachedGoal)
+            CameraFollowDelay.damping = 6;
 
-			print("Reached goal");
-			hasReachedGoal = !hasReachedGoal;
-			EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
-			et.Enable();
-
-		} else {
-			
-			// Round the transform's position
-			tileTransform.position = target;
-
-		}
-
-	}
+    }
 
 	/// <summary>
 	/// Rotates by a desired angle.
@@ -174,10 +193,11 @@ public class TriggerActivator : MonoBehaviour {
 
 		if (hasReachedGoal) {
 
-			print("Reached goal");
+            print("Reached goal");
+            CameraFollowDelay.damping = 50.0f;
 			hasReachedGoal = !hasReachedGoal;
 			EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
-			et.Enable();
+			et.EnableObject();
 
 		}
 
@@ -210,5 +230,17 @@ public class TriggerActivator : MonoBehaviour {
 		}
 
 	}
+
+	private IEnumerator IncrementCameraDamping(float limit) {
+
+		for (float i = 0; i < limit; i ++) {
+
+			CameraFollowDelay.damping += (i / 100);
+			print("> Camera Damping: " + CameraFollowDelay.damping);
+            yield return null;
+
+        }
+
+    }
 
 }

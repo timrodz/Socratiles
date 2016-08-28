@@ -33,7 +33,9 @@ public class PlayerMovement : MonoBehaviour {
 			ProcessInput();
 
 		} else {
+
 			StayOnTile();
+
 		}
 
 	}
@@ -86,12 +88,12 @@ public class PlayerMovement : MonoBehaviour {
 
 			canMove = false;
 			isPlayerMoving = true;
-            GetComponentInChildren<Animator>().SetBool("isMoving", true);
+            GetComponentInChildren<Animator>().SetBool("isMoving", false);
 
 			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
 
 			yield return new WaitForSeconds(0.0f);
-			for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / duration)) {
+			for (float t = 0.0f; t < 0.6f; t += (Time.deltaTime / duration)) {
 
 				if (!isPlayerMoving) {
 					transform.position = targetPosition;
