@@ -16,7 +16,6 @@ public class TutorialArrows : MonoBehaviour {
 		
 		if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) {
 
-			print("Pressing up");
 			StartCoroutine(Highlight(topLeft));
 
 		}
@@ -60,7 +59,7 @@ public class TutorialArrows : MonoBehaviour {
 
 	IEnumerator Highlight(Image img) {
 
-		img.sprite = arrowImages[1];
+		img.GetComponent<Outline>().enabled = true;
 
 		yield return null;
 
@@ -68,7 +67,7 @@ public class TutorialArrows : MonoBehaviour {
 
     IEnumerator UndoHighlight(Image img) {
 
-			img.sprite = arrowImages[0];
+		img.GetComponent<Outline>().enabled = false;
 
 		yield return null;
 

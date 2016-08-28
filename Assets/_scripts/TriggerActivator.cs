@@ -135,6 +135,7 @@ public class TriggerActivator : MonoBehaviour {
 	private IEnumerator TranslateTo() {
 
 		targetTransform = tileTransform.position + (distance * transformVector);
+		print(targetTransform);
 
 		if (hasReachedGoal) {
 			yield return new WaitForSeconds(0.2f);

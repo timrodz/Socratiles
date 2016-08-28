@@ -43,23 +43,23 @@ public class PlayerMovement : MonoBehaviour {
 	void ProcessInput() {
 
 		// Move left because the camera is positioned at y: 225
-		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Q)) {
+		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
 			Turn(Direction.Backwards);
 			StartCoroutine(MoveForward());
 		}
 
-		if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.C))
+		if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
 			Turn(Direction.Forward);
 			StartCoroutine(MoveForward());
 		}
 
-		if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.W)){
+		if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)){
             Turn(Direction.Left);
 			StartCoroutine(MoveForward());
 		}
 
-		if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Z)) {
+		if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
 			Turn(Direction.Right);
 			StartCoroutine(MoveForward());
 		}
