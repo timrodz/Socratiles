@@ -85,8 +85,6 @@ public class LevelManager : MonoBehaviour {
 
 	void CreateLevel(Transform _t, Object _o, Vector3 _v) {
 
-        // print("Creating level: " + _o + " player: " + _t + " at: " + _v);
-
         GameObject levelToInstantiate = Instantiate(_o, _v, new Quaternion(0, 0, 0, 1)) as GameObject;
 		levelToInstantiate.name = TrimString(_o.ToString(), false);
 		_t.SetParent(levelToInstantiate.GetComponent<Transform>());

@@ -4,48 +4,74 @@ using System.Collections;
 
 public class TutorialArrows : MonoBehaviour {
 
-    public Image topRight;
-    public Image topLeft;
-    public Image btmRight;
-    public Image btmLeft;
+	public Sprite[] arrowImages;
 
+	public Image topRight;
+	public Image topLeft;
+	public Image btmRight;
+	public Image btmLeft;
 
-    // Use this for initialization
-    void Start() {
+	// Update is called once per frame
+	void Update() {
+		
+		if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) {
 
-    }
+			print("Pressing up");
+			StartCoroutine(Highlight(topLeft));
 
-    // Update is called once per frame
-    void Update() {
+		}
+        else {
 
+            StartCoroutine(UndoHighlight(topLeft));
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
-        {
-            StartCoroutine(FadeOut(topLeft));
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-        {
-            StartCoroutine(FadeOut(topRight));
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
-        {
-            StartCoroutine(FadeOut(btmRight));
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-        {
-            StartCoroutine(FadeOut(btmLeft));
-        }
-    }
+		if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
+			
+			StartCoroutine(Highlight(topRight));
 
-    IEnumerator FadeOut(Image img)
-    {
-        float alpha = img.color.a;
-        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 0.9f)
-        {
-            Color newColor = new Color(1, 1, 1, Mathf.Lerp(alpha, 0, t));
-            img.color = newColor;
-            yield return null;
+		}
+        else {
+
+            StartCoroutine(UndoHighlight(topRight));
+
+        }
+		if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) {
+			
+			StartCoroutine(Highlight(btmRight));
+
+		}
+        else {
+
+            StartCoroutine(UndoHighlight(btmRight));
+
+        }
+		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) {
+			
+			StartCoroutine(Highlight(btmLeft));
+
+		}
+        else {
+
+            StartCoroutine(UndoHighlight(btmLeft));
+
         }
 
-    }
+	}
+
+	IEnumerator Highlight(Image img) {
+
+		img.sprite = arrowImages[1];
+
+		yield return null;
+
+	}
+
+    IEnumerator UndoHighlight(Image img) {
+
+			img.sprite = arrowImages[0];
+
+		yield return null;
+
+	}
+
 }

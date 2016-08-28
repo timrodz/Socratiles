@@ -80,11 +80,9 @@ public class TriggerActivator : MonoBehaviour {
 			else
 				transformVector = oppTransformVector;
 
-			if (!shouldHaveStates && (trigger == TriggerType.TurnRotation)) {
-
+			// Rotations won't have states
+			if (!shouldHaveStates && (trigger == TriggerType.TurnRotation))
 				transformVector = orgTransformVector;
-
-			}
 
 			// Play the audio clip
 			if (playSound)
@@ -101,11 +99,12 @@ public class TriggerActivator : MonoBehaviour {
 					StartCoroutine(TranslateTo());
 					break;
 				case TriggerType.WinningRotation:
-                    StartCoroutine(RotateByAxis(transformVector * 180));
+                    // StartCoroutine(RotateByAxis(transformVector * 180));
 					break;
 				case TriggerType.WinningTranslation:
                     hasReachedGoal = true;
 					StartCoroutine(TranslateTo());
+					StartCoroutine(RotateByAxis(transformVector * 180));
 					break;
 
 			}
@@ -138,7 +137,7 @@ public class TriggerActivator : MonoBehaviour {
 		targetTransform = tileTransform.position + (distance * transformVector);
 
 		if (hasReachedGoal) {
-			yield return new WaitForSeconds(0.3f);
+			yield return new WaitForSeconds(0.2f);
             CameraFollowDelay.damping = 100;
 		}
 
@@ -174,7 +173,11 @@ public class TriggerActivator : MonoBehaviour {
 	/// </summary>
 	private IEnumerator RotateByAxis(Vector3 angleToRotate) {
 
-		Quaternion fromAngle = tileTransform.rotation; // Get the transform's current rotation coordinates
+        if (hasReachedGoal)	{
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        Quaternion fromAngle = tileTransform.rotation; // Get the transform's current rotation coordinates
 		Quaternion toAngle = Quaternion.Euler(tileTransform.eulerAngles + angleToRotate); // Convert byAngles to radians
 
 		// Process a loop that lasts for the prompted time
@@ -182,6 +185,7 @@ public class TriggerActivator : MonoBehaviour {
 
 			// Make a slerp from the current rotation's coordinates to the desired rotation
 			tileTransform.rotation = Quaternion.Slerp(fromAngle, toAngle, t * 1.5f);
+
 			yield return null;
 
 		}
@@ -190,16 +194,6 @@ public class TriggerActivator : MonoBehaviour {
 		tileTransform.rotation = toAngle;
 
 		UpdateStates();
-
-		if (hasReachedGoal) {
-
-            print("Reached goal");
-            CameraFollowDelay.damping = 50.0f;
-			hasReachedGoal = !hasReachedGoal;
-			EnableTransform et = transform.gameObject.GetComponent<EnableTransform>();
-			et.EnableObject();
-
-		}
 
 	}
 
@@ -230,17 +224,5 @@ public class TriggerActivator : MonoBehaviour {
 		}
 
 	}
-
-	private IEnumerator IncrementCameraDamping(float limit) {
-
-		for (float i = 0; i < limit; i ++) {
-
-			CameraFollowDelay.damping += (i / 100);
-			print("> Camera Damping: " + CameraFollowDelay.damping);
-            yield return null;
-
-        }
-
-    }
 
 }

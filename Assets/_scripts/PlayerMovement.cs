@@ -88,7 +88,7 @@ public class PlayerMovement : MonoBehaviour {
 
 			canMove = false;
 			isPlayerMoving = true;
-            GetComponentInChildren<Animator>().SetBool("isMoving", false);
+            GetComponentInChildren<Animator>().SetBool("isMoving", true);
 
 			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
 
