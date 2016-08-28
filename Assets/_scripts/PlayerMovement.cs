@@ -12,8 +12,9 @@ public class PlayerMovement : MonoBehaviour {
 
 	float verticalAxis;
 	float horizontalAxis;
-	public float duration = 1.0f;
-	Transform nextTile;
+    Transform nextTile;
+
+    public float duration = 1.0f;
 	public static bool isTileMoving;
 	public static bool isPlayerMoving;
 	private bool canMove = true;
@@ -85,6 +86,7 @@ public class PlayerMovement : MonoBehaviour {
 
 			canMove = false;
 			isPlayerMoving = true;
+            GetComponentInChildren<Animator>().SetBool("isMoving", true);
 
 			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
 
@@ -106,8 +108,9 @@ public class PlayerMovement : MonoBehaviour {
 
 			canMove = true;
 			isPlayerMoving = false;
+            
 
-		}
+        }
 
 	}
 
@@ -135,7 +138,8 @@ public class PlayerMovement : MonoBehaviour {
 	void StayOnTile() {
 		
 		if (nextTile) {
-			transform.parent = nextTile;
+            GetComponentInChildren<Animator>().SetBool("isMoving", false);
+            transform.parent = nextTile;
 		}
 
 	}
