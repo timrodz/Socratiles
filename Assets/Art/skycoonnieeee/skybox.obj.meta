@@ -1,38 +1,17 @@
 fileFormatVersion: 2
-guid: 923a2fbe5781e2b4db61c1d1bf9a9669
-timeCreated: 1472344882
+guid: 4cbb723a0a058a644ab1f299e071e506
+timeCreated: 1472354163
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Group12
-    100002: left
-    100004: //RootNode
-    100006: pCone6
-    100008: pCylinder1
-    100010: polySurface3
-    100012: polySurface4
-    100014: polySurface4 1
-    100016: polySurface5
-    100018: transform1
-    100020: transform2
-    100022: transform3
-    400000: Group12
-    400002: left
-    400004: //RootNode
-    400006: pCone6
-    400008: pCylinder1
-    400010: polySurface3
-    400012: polySurface4
-    400014: polySurface4 1
-    400016: polySurface5
-    400018: transform1
-    400020: transform2
-    400022: transform3
-    2300000: polySurface4
-    3300000: polySurface4
-    4300000: polySurface4
-    9500000: //RootNode
+    100000: pCone3
+    100002: //RootNode
+    400000: pCone3
+    400002: //RootNode
+    2300000: pCone3
+    3300000: pCone3
+    4300000: pCone3
   materials:
     importMaterials: 1
     materialName: 0
@@ -57,7 +36,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 2
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -91,7 +70,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
