@@ -3,11 +3,11 @@ using System.Collections;
 
 public class EnableTransform : MonoBehaviour {
 
-	public Transform T;
+	public Transform transformObject;
 
-	public void Enable() {
+	public void EnableObject() {
 
-		T.gameObject.SetActive(true);
+		transformObject.gameObject.SetActive(true);
 
 	}
 

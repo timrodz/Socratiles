@@ -4,21 +4,17 @@ using System.Collections;
 public class CameraFollowDelay : MonoBehaviour {
 	
 	// The object to lock on to
-	public Transform target;
+	public Transform targetTransform;
 
 	// Controls the rotation
-	public float damping = 6.0f;
-
-	public float offsetX = 0.0f;
-	public float offsetY = 0.0f;
-	public float offsetZ = 0.0f;
+	public static float damping = 6.0f;
 
 	void LateUpdate() {
 		
-		if (target) {
+		if (targetTransform) {
 
 			//Look at and dampen the rotation
-			Vector3 targetPosition = new Vector3(target.position.x + offsetX, target.position.y + offsetY, target.position.z + offsetZ);
+			Vector3 targetPosition = new Vector3(targetTransform.position.x, targetTransform.position.y, targetTransform.position.z);
 
 			transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * damping);
 
