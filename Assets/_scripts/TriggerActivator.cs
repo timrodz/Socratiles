@@ -20,9 +20,11 @@ public class TriggerActivator : MonoBehaviour {
 	[HideInInspector]
     public Vector3 targetTransform;
 
-	public float distance = 1.0f;
+	public float translateDistance = 1.0f;
 
-	public float transformLength = 0.99f;
+	public float duration = 1.0f;
+
+	private float amountToWaitBeforeActivation = 0.2f;
 
 	private bool hasActivatedTrigger = false;
 
@@ -92,8 +94,8 @@ public class TriggerActivator : MonoBehaviour {
 
 				// rotation
 				case TriggerType.TurnRotation:
-					StartCoroutine(RaiseAndLower(1.1f));
-					StartCoroutine(RotateByAxis(transformVector * -90));
+					StartCoroutine(RaiseAndLowerBy(1.5f));
+					StartCoroutine(RotateBy(transformVector * -90));
 					break;
 				case TriggerType.Translation:
 					StartCoroutine(TranslateTo());
@@ -104,7 +106,7 @@ public class TriggerActivator : MonoBehaviour {
 				case TriggerType.WinningTranslation:
                     hasReachedGoal = true;
 					StartCoroutine(TranslateTo());
-					StartCoroutine(RotateByAxis(transformVector * 180));
+					StartCoroutine(RotateBy(transformVector * 180));
 					break;
 
 			}
@@ -134,19 +136,20 @@ public class TriggerActivator : MonoBehaviour {
 	/// </summary>
 	private IEnumerator TranslateTo() {
 
-		targetTransform = tileTransform.position + (distance * transformVector);
-		print(targetTransform);
+		yield return new WaitForSeconds(amountToWaitBeforeActivation);
+
+		targetTransform = tileTransform.position + (translateDistance * transformVector);
 
 		if (hasReachedGoal) {
 			yield return new WaitForSeconds(0.2f);
             CameraFollowDelay.damping = 100;
 		}
 
-		for (float t = 0.0f; t < 0.75f; t += (Time.deltaTime / transformLength)) {
+		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / duration)) {
 
 			tileTransform.position = Vector3.MoveTowards(tileTransform.position, targetTransform, t);
 
-			if ((t >= 0.45f) && (hasReachedGoal)) {
+			if ((t >= 0.85f) && (hasReachedGoal)) {
 
              	print("Reached Goal at " + tileTransform.position);
              	hasReachedGoal = !hasReachedGoal;
@@ -160,7 +163,7 @@ public class TriggerActivator : MonoBehaviour {
 		}
 
 		// Round the transform's position
-		tileTransform.position = targetTransform;
+		// tileTransform.position = targetTransform;
 
 		UpdateStates();
 
@@ -172,17 +175,22 @@ public class TriggerActivator : MonoBehaviour {
 	/// <summary>
 	/// Rotates by a desired angle.
 	/// </summary>
-	private IEnumerator RotateByAxis(Vector3 angleToRotate) {
+	private IEnumerator RotateBy(Vector3 angleToRotate) {
+
+		yield return new WaitForSeconds(amountToWaitBeforeActivation);
 
         if (hasReachedGoal)	{
             yield return new WaitForSeconds(0.5f);
         }
 
-        Quaternion fromAngle = tileTransform.rotation; // Get the transform's current rotation coordinates
-		Quaternion toAngle = Quaternion.Euler(tileTransform.eulerAngles + angleToRotate); // Convert byAngles to radians
+		// Get the transform's current rotation coordinates
+        Quaternion fromAngle = tileTransform.rotation;
+
+		// Convert byAngles to radians
+		Quaternion toAngle = Quaternion.Euler(tileTransform.eulerAngles + angleToRotate);
 
 		// Process a loop that lasts for the prompted time
-		for (float t = 0.0f; t < 0.75f; t += (Time.deltaTime / transformLength)) {
+		for (float t = 0.0f; t < 1.0f; t += (Time.deltaTime / duration)) {
 
 			// Make a slerp from the current rotation's coordinates to the desired rotation
 			tileTransform.rotation = Quaternion.Slerp(fromAngle, toAngle, t * 1.5f);
@@ -201,15 +209,18 @@ public class TriggerActivator : MonoBehaviour {
 	/// <summary>
 	/// Raises and lowers by a desired distance (for rising and lowering)
 	/// </summary>
-	private IEnumerator RaiseAndLower(float distance) {
+	/// <param name="distance"> The distance to raise and lower by </param>
+	private IEnumerator RaiseAndLowerBy(float distance) {
+
+		yield return new WaitForSeconds(amountToWaitBeforeActivation);
 
 		// Raise up
 		Vector3 target = tileTransform.position + (distance * Vector3.up);
 		print("Rising up");
 
-		for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / (transformLength))) {
+		for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / (duration))) {
 
-			tileTransform.position = Vector3.MoveTowards(tileTransform.position, target, t * 1.25f);
+			tileTransform.position = Vector3.MoveTowards(tileTransform.position, target, t);
 			yield return null;
 
 		}
@@ -217,7 +228,7 @@ public class TriggerActivator : MonoBehaviour {
 		target = tileTransform.position + (distance * Vector3.down);
 		print("Lowering down");
 
-		for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / (transformLength))) {
+		for (float t = 0.0f; t < 0.5f; t += (Time.deltaTime / (duration))) {
 
 			tileTransform.position = Vector3.MoveTowards(tileTransform.position, target, t);
 			yield return null;

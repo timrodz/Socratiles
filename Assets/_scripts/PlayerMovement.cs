@@ -14,13 +14,22 @@ public class PlayerMovement : MonoBehaviour {
 	float horizontalAxis;
     Transform nextTile;
 
-    public float duration = 1.0f;
 	public static bool isTileMoving;
 	public static bool isPlayerMoving;
 	private bool canMove = true;
+	private float duration = 1.0f;
 
 	// Update is called once per frame
 	void Update() {
+
+		ProcessAnimationStates();
+
+		if (!isTileMoving && canMove) {
+			ProcessInput();
+		} 
+		else {
+			StayOnTile();
+		}
 
 		transform.position = new Vector3(
 			(float)System.Math.Round(transform.position.x, 2),
@@ -28,18 +37,11 @@ public class PlayerMovement : MonoBehaviour {
 			(float)System.Math.Round(transform.position.z, 2)
 		);
 
-		if (!isTileMoving && canMove) {
-			
-			ProcessInput();
-
-		} else {
-
-			StayOnTile();
-
-		}
-
 	}
 
+	/// <summary>
+	/// Process the input of the player
+	/// </summary>
 	void ProcessInput() {
 
 		// Move left because the camera is positioned at y: 225
@@ -47,25 +49,27 @@ public class PlayerMovement : MonoBehaviour {
 			Turn(Direction.Backwards);
 			StartCoroutine(MoveForward());
 		}
-
-		if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+		else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
 			Turn(Direction.Forward);
 			StartCoroutine(MoveForward());
 		}
-
-		if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)){
+		else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)){
             Turn(Direction.Left);
 			StartCoroutine(MoveForward());
 		}
-
-		if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
+		else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
 			Turn(Direction.Right);
 			StartCoroutine(MoveForward());
 		}
 
 	}
 
+	/// <summary>
+	/// Detects the next waypoint to move to
+	/// </summary>
+	/// <param name="direction"> The direction vector to check the path at</param>
+	/// <returns>true if detected a path, otherwise return false</returns>
 	bool DetectPath(Vector3 direction) {
 
 		RaycastHit hit;
@@ -73,8 +77,10 @@ public class PlayerMovement : MonoBehaviour {
 		if (Physics.Raycast(transform.position, direction, out hit, 10)) {
 			
 			if (hit.collider.gameObject.CompareTag("TilePath")) {
+
 				nextTile = hit.collider.GetComponent<Transform>();
 				return true;
+
 			}
 
 		}
@@ -89,29 +95,39 @@ public class PlayerMovement : MonoBehaviour {
 
 			canMove = false;
 			isPlayerMoving = true;
-            GetComponentInChildren<Animator>().SetBool("isMoving", true);
 
+			GetComponentInChildren<Animator>().SetBool("isMoving", true);
+            
 			Vector3 targetPosition = new Vector3(nextTile.position.x, transform.position.y, nextTile.position.z);
 
-			yield return new WaitForSeconds(0.0f);
-			for (float t = 0.0f; t < 0.6f; t += (Time.deltaTime / duration)) {
+			while (transform.position != targetPosition) {
 
-				if (!isPlayerMoving) {
-					transform.position = targetPosition;
-					canMove = true;
-					yield break;
-				}
-				
-				transform.position = Vector3.MoveTowards(transform.position, targetPosition, t);
+				transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * 2.5f);
 				yield return null;
 
 			}
+			// yield return new WaitForSeconds(0.0f);
+			// for (float t = 0.0f; t < duration; t += (Time.deltaTime)) {
 
+			// 	if (!isPlayerMoving) {
+			// 		transform.position = targetPosition;
+			// 		canMove = true;
+			// 		yield break;
+			// 	}
+				
+			// 	transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime);
+			// 	yield return null;
+
+			// }
+
+			GetComponentInChildren<Animator>().SetBool("isMoving", false);
 			transform.position = targetPosition;
+			print("Player stopped moving");
 
 			canMove = true;
 			isPlayerMoving = false;
-            
+
+			
 
         }
 
@@ -141,8 +157,24 @@ public class PlayerMovement : MonoBehaviour {
 	void StayOnTile() {
 		
 		if (nextTile) {
-            GetComponentInChildren<Animator>().SetBool("isMoving", false);
+			// print("Reached tile");
+            // GetComponentInChildren<Animator>().SetBool("isMoving", false);
             transform.parent = nextTile;
+		}
+
+	}
+
+	void ProcessAnimationStates() {
+
+		if (!canMove) {
+
+			// GetComponentInChildren<Animator>().SetBool("isMoving", true);
+
+		}
+		else {
+
+			// GetComponentInChildren<Animator>().SetBool("isMoving", false);
+
 		}
 
 	}
